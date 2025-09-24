@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: everylingua-ai
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
+    plan: free
+    autoDeploy: false
+    healthCheckPath: /health
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        generateValue: true
+      - key: EMAIL_SENDER
+        generateValue: true
+      - key: EMAIL_PASSWORD
+        generateValue: true
+      - key: EMAIL_SMTP_SERVER
+        value: smtp.gmail.com
+      - key: EMAIL_SMTP_PORT
+        value: 587
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        generateValue: true
