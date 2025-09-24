@@ -6,12 +6,8 @@ requests==2.31.0
 google-generativeai==0.8.3
 google-cloud-texttospeech==2.16.3
 beautifulsoup4==4.12.3
-pygame==2.5.2
-SpeechRecognition==3.10.1
 googlemaps==4.10.0
 deep-translator==1.11.4
-colorama==0.4.6
-tqdm==4.66.2
 werkzeug==3.0.1
 typing_extensions==4.10.0
 pydantic==2.6.4
