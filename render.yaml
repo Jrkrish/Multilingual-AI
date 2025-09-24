@@ -1,13 +1,15 @@
 services:
   - type: web
     name: everylingua-ai
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
+    runtime: python3
+    buildCommand: "pip install --no-cache-dir -r requirements.txt"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
     plan: free
     autoDeploy: false
     healthCheckPath: /health
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
       - key: FLASK_ENV
         value: production
       - key: GEMINI_API_KEY
