@@ -10,6 +10,7 @@ from dealership_logic import get_available_bikes, get_service_packages, get_deal
 from crm_integration import create_test_ride_booking, create_service_booking, get_customer_dashboard
 from human_agent_fallback import should_escalate_to_human, escalate_query, get_agent_response, get_agent_dashboard, update_agent_status, resolve_query
 from location_service import set_user_location, get_nearest_dealership, process_location_query
+from otp_service import send_registration_otp, verify_registration_otp, resend_registration_otp
 import threading
 import time
 import os
@@ -49,6 +50,15 @@ def dealer_locator():
         return app.send_static_file('dealer_locator.html')
     except:
         with open('dealer_locator.html', 'r', encoding='utf-8') as f:
+            return f.read()
+
+@app.route('/register.html')
+def register():
+    """Serve the user registration HTML interface"""
+    try:
+        return app.send_static_file('register.html')
+    except:
+        with open('register.html', 'r', encoding='utf-8') as f:
             return f.read()
 
 @app.route('/api/bikes')
@@ -383,6 +393,89 @@ def get_gemini_key():
             return jsonify({"success": False, "error": "Gemini API key not configured"})
 
         return jsonify({"success": True, "api_key": gemini_api_key})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+@app.route('/api/register/send-otp', methods=['POST'])
+def send_otp():
+    """Send OTP for user registration"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"})
+
+        identifier = data.get('identifier')  # email or phone
+        method = data.get('method', 'email')  # 'email' or 'sms'
+
+        if not identifier:
+            return jsonify({"success": False, "error": "Email or phone number required"})
+
+        # Validate method
+        if method not in ['email', 'sms']:
+            return jsonify({"success": False, "error": "Invalid verification method"})
+
+        # Send OTP
+        success, message = send_registration_otp(identifier, method)
+
+        return jsonify({
+            "success": success,
+            "message": message,
+            "method": method,
+            "identifier": identifier
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+@app.route('/api/register/verify-otp', methods=['POST'])
+def verify_otp():
+    """Verify OTP for user registration"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"})
+
+        identifier = data.get('identifier')
+        otp = data.get('otp')
+
+        if not identifier or not otp:
+            return jsonify({"success": False, "error": "Identifier and OTP required"})
+
+        # Verify OTP
+        success, message = verify_registration_otp(identifier, otp)
+
+        return jsonify({
+            "success": success,
+            "message": message,
+            "verified": success
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+@app.route('/api/register/resend-otp', methods=['POST'])
+def resend_otp():
+    """Resend OTP for user registration"""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "error": "No data provided"})
+
+        identifier = data.get('identifier')
+        method = data.get('method', 'email')
+
+        if not identifier:
+            return jsonify({"success": False, "error": "Email or phone number required"})
+
+        # Resend OTP
+        success, message = resend_registration_otp(identifier, method)
+
+        return jsonify({
+            "success": success,
+            "message": message,
+            "method": method
+        })
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})

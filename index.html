@@ -364,11 +364,105 @@
 
             speakText(text) {
                 if (this.synth) {
+                    // Stop any current speech
+                    this.synth.cancel();
+                    
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = this.currentLanguage[0];
                     utterance.rate = 0.9;
                     utterance.pitch = 1;
+                    
+                    // Add voice controls
+                    this.currentUtterance = utterance;
+                    this.isSpeaking = true;
+                    this.showVoiceControls();
+                    
+                    utterance.onstart = () => {
+                        this.updateStatus('Speaking...', 'purple');
+                    };
+                    
+                    utterance.onend = () => {
+                        this.isSpeaking = false;
+                        this.hideVoiceControls();
+                        this.updateStatus('Ready', 'green');
+                    };
+                    
+                    utterance.onerror = () => {
+                        this.isSpeaking = false;
+                        this.hideVoiceControls();
+                        this.updateStatus('Ready', 'green');
+                    };
+                    
                     this.synth.speak(utterance);
+                }
+            }
+
+            stopVoice() {
+                if (this.synth && this.isSpeaking) {
+                    this.synth.cancel();
+                    this.isSpeaking = false;
+                    this.hideVoiceControls();
+                    this.updateStatus('Ready', 'green');
+                }
+            }
+
+            pauseVoice() {
+                if (this.synth && this.isSpeaking) {
+                    this.synth.pause();
+                    this.updateStatus('Paused', 'yellow');
+                }
+            }
+
+            resumeVoice() {
+                if (this.synth && this.isSpeaking) {
+                    this.synth.resume();
+                    this.updateStatus('Speaking...', 'purple');
+                }
+            }
+
+            showVoiceControls() {
+                // Create voice control buttons if they don't exist
+                if (!document.getElementById('voice-controls')) {
+                    const voiceControls = document.createElement('div');
+                    voiceControls.id = 'voice-controls';
+                    voiceControls.className = 'fixed bottom-4 right-4 flex space-x-2 z-50';
+                    voiceControls.innerHTML = `
+                        <button id="pause-voice-btn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-full">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                        <button id="stop-voice-btn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                    `;
+                    document.body.appendChild(voiceControls);
+
+                    // Add event listeners
+                    document.getElementById('pause-voice-btn').addEventListener('click', () => {
+                        if (this.synth.speaking && !this.synth.paused) {
+                            this.pauseVoice();
+                            document.getElementById('pause-voice-btn').innerHTML = '<i class="fas fa-play"></i> Resume';
+                        } else if (this.synth.paused) {
+                            this.resumeVoice();
+                            document.getElementById('pause-voice-btn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                        }
+                    });
+
+                    document.getElementById('stop-voice-btn').addEventListener('click', () => {
+                        this.stopVoice();
+                    });
+                }
+                document.getElementById('voice-controls').classList.remove('hidden');
+            }
+
+            hideVoiceControls() {
+                const voiceControls = document.getElementById('voice-controls');
+                if (voiceControls) {
+                    voiceControls.classList.add('hidden');
+                }
+                // Reset pause button text
+                const pauseBtn = document.getElementById('pause-voice-btn');
+                if (pauseBtn) {
+                    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
                 }
             }
 

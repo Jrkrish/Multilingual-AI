@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EveryLingua AI - User Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg py-6 px-4">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl font-bold mb-2">
+                <i class="fas fa-motorcycle mr-3"></i>
+                EveryLingua AI
+            </h1>
+            <p class="text-xl opacity-90">User Registration</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto">
+            <!-- Registration Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-center space-x-4">
+                    <div id="step1-indicator" class="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full text-sm font-bold">1</div>
+                    <div class="w-16 h-1 bg-gray-600" id="step-connector"></div>
+                    <div id="step2-indicator" class="flex items-center justify-center w-8 h-8 bg-gray-600 rounded-full text-sm font-bold">2</div>
+                </div>
+                <div class="flex items-center justify-center mt-2">
+                    <span class="text-sm text-gray-400 mr-20">Details</span>
+                    <span class="text-sm text-gray-400">Verify</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Registration Form -->
+            <div id="registration-form" class="glass-effect rounded-2xl p-8">
+                <h2 class="text-2xl font-semibold mb-6 text-center">Create Account</h2>
+                
+                <form id="register-form">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Full Name</label>
+                            <input type="text" id="fullName" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-600 text-white" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email Address</label>
+                            <input type="email" id="email" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-600 text-white" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Phone Number</label>
+                            <input type="tel" id="phone" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-600 text-white" placeholder="+91 9876543210" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Verification Method</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="verificationMethod" value="email" class="mr-2" checked>
+                                    <i class="fas fa-envelope mr-1"></i> Email
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="verificationMethod" value="sms" class="mr-2">
+                                    <i class="fas fa-sms mr-1"></i> SMS
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Password</label>
+                            <input type="password" id="password" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-600 text-white" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="w-full p-3 bg-gray-800 rounded-lg border border-gray-600 text-white" required>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" id="terms" class="mr-2" required>
+                            <label for="terms" class="text-sm">I agree to the <a href="#" class="text-blue-400">Terms & Conditions</a></label>
+                        </div>
+
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Send Verification Code
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: OTP Verification -->
+            <div id="otp-verification" class="glass-effect rounded-2xl p-8 hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-center">Verify Your Account</h2>
+                
+                <div class="text-center mb-6">
+                    <i class="fas fa-shield-alt text-4xl text-blue-400 mb-4"></i>
+                    <p class="text-gray-300" id="otp-message">
+                        We've sent a 6-digit verification code to your email address.
+                    </p>
+                </div>
+
+                <form id="otp-form">
+                    <div class="flex justify-center space-x-2 mb-6">
+                        <input type="text" class="otp-input bg-gray-800 border border-gray-600 rounded-lg text-center" maxlength="1" id="otp1">
+                        <input type="text" class="otp-input bg-gray-800 border border-gray-600 rounded-lg text-center" maxlength="1" id="otp2">
+                        <input type="text" class="otp-input bg-gray-800 border border-gray-600 rounded-lg text-center" maxlength="1" id="otp3">
+                        <input type="text" class="otp-input bg-gray-800 border border-gray-600 rounded-lg text-center" maxlength="1" id="otp4">
+                        <input type="text" class="otp-input bg-gray-800 border border-gray-600 rounded-lg text-center" maxlength="1" id="otp5">
+                        <input type="text" class="otp-input bg-gray-800 border border-gray-600 rounded-lg text-center" maxlength="1" id="otp6">
+                    </div>
+
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition-colors mb-4">
+                        <i class="fas fa-check mr-2"></i>
+                        Verify Account
+                    </button>
+
+                    <div class="text-center">
+                        <p class="text-gray-400 text-sm mb-2">Didn't receive the code?</p>
+                        <button type="button" id="resend-btn" class="text-blue-400 hover:text-blue-300 text-sm">
+                            <i class="fas fa-redo mr-1"></i>
+                            Resend Code
+                        </button>
+                        <div class="mt-2">
+                            <span class="text-gray-400 text-sm">Expires in: </span>
+                            <span id="countdown" class="text-red-400 font-bold">05:00</span>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <button id="back-btn" class="text-gray-400 hover:text-gray-300 text-sm">
+                        <i class="fas fa-arrow-left mr-1"></i>
+                        Back to Registration
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="success-message" class="glass-effect rounded-2xl p-8 text-center hidden">
+                <div class="mb-6">
+                    <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
+                    <h2 class="text-2xl font-semibold mb-2">Account Verified!</h2>
+                    <p class="text-gray-300">Your account has been successfully created and verified.</p>
+                </div>
+                
+                <div class="space-y-3">
+                    <a href="/" class="block w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-home mr-2"></i>
+                        Go to Voice Assistant
+                    </a>
+                    <a href="/dealer_dashboard.html" class="block w-full bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        Dealer Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="glass-effect p-6 rounded-xl text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p id="loading-text">Processing...</p>
+        </div>
+    </div>
+
+    <script>
+        class RegistrationSystem {
+            constructor() {
+                this.currentStep = 1;
+                this.registrationData = {};
+                this.countdown = 300; // 5 minutes
+                this.countdownInterval = null;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupOTPInputs();
+            }
+
+            setupEventListeners() {
+                // Registration form submission
+                document.getElementById('register-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleRegistration();
+                });
+
+                // OTP form submission
+                document.getElementById('otp-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleOTPVerification();
+                });
+
+                // Resend OTP
+                document.getElementById('resend-btn').addEventListener('click', () => {
+                    this.resendOTP();
+                });
+
+                // Back button
+                document.getElementById('back-btn').addEventListener('click', () => {
+                    this.goToStep(1);
+                });
+            }
+
+            setupOTPInputs() {
+                const otpInputs = document.querySelectorAll('.otp-input');
+                
+                otpInputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        // Move to next input if current is filled
+                        if (e.target.value && index < otpInputs.length - 1) {
+                            otpInputs[index + 1].focus();
+                        }
+                    });
+
+                    input.addEventListener('keydown', (e) => {
+                        // Move to previous input on backspace
+                        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                            otpInputs[index - 1].focus();
+                        }
+                    });
+
+                    // Only allow numbers
+                    input.addEventListener('input', (e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    });
+                });
+            }
+
+            async handleRegistration() {
+                const formData = this.getFormData();
+                
+                // Basic validation
+                if (!this.validateForm(formData)) {
+                    return;
+                }
+
+                this.showLoading('Sending verification code...');
+
+                try {
+                    const verificationMethod = document.querySelector('input[name="verificationMethod"]:checked').value;
+                    const identifier = verificationMethod === 'email' ? formData.email : formData.phone;
+
+                    // Send OTP
+                    const response = await fetch('/api/register/send-otp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            identifier: identifier,
+                            method: verificationMethod
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.registrationData = formData;
+                        this.registrationData.verificationMethod = verificationMethod;
+                        this.registrationData.identifier = identifier;
+                        
+                        this.updateOTPMessage(verificationMethod, identifier);
+                        this.goToStep(2);
+                        this.startCountdown();
+                        this.showSuccess('Verification code sent successfully!');
+                    } else {
+                        this.showError(result.message || 'Failed to send verification code');
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    this.showError('Network error. Please try again.');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async handleOTPVerification() {
+                const otp = this.getOTPValue();
+                
+                if (otp.length !== 6) {
+                    this.showError('Please enter the complete 6-digit code');
+                    return;
+                }
+
+                this.showLoading('Verifying code...');
+
+                try {
+                    const response = await fetch('/api/register/verify-otp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            identifier: this.registrationData.identifier,
+                            otp: otp
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Registration successful
+                        this.stopCountdown();
+                        this.goToStep(3);
+                        
+                        // Here you would typically save the user data to database
+                        console.log('User registered successfully:', this.registrationData);
+                        
+                    } else {
+                        this.showError(result.message || 'Invalid verification code');
+                        this.clearOTP();
+                    }
+                } catch (error) {
+                    console.error('Verification error:', error);
+                    this.showError('Network error. Please try again.');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            async resendOTP() {
+                this.showLoading('Resending code...');
+
+                try {
+                    const response = await fetch('/api/register/resend-otp', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            identifier: this.registrationData.identifier,
+                            method: this.registrationData.verificationMethod
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        this.showSuccess('Verification code resent successfully!');
+                        this.countdown = 300;
+                        this.startCountdown();
+                        this.clearOTP();
+                    } else {
+                        this.showError(result.message || 'Failed to resend code');
+                    }
+                } catch (error) {
+                    console.error('Resend error:', error);
+                    this.showError('Network error. Please try again.');
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            getFormData() {
+                return {
+                    fullName: document.getElementById('fullName').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    password: document.getElementById('password').value,
+                    confirmPassword: document.getElementById('confirmPassword').value,
+                    terms: document.getElementById('terms').checked
+                };
+            }
+
+            validateForm(data) {
+                if (!data.fullName) {
+                    this.showError('Full name is required');
+                    return false;
+                }
+
+                if (!data.email || !this.isValidEmail(data.email)) {
+                    this.showError('Valid email address is required');
+                    return false;
+                }
+
+                if (!data.phone || !this.isValidPhone(data.phone)) {
+                    this.showError('Valid phone number is required');
+                    return false;
+                }
+
+                if (data.password.length < 6) {
+                    this.showError('Password must be at least 6 characters');
+                    return false;
+                }
+
+                if (data.password !== data.confirmPassword) {
+                    this.showError('Passwords do not match');
+                    return false;
+                }
+
+                if (!data.terms) {
+                    this.showError('You must agree to the terms and conditions');
+                    return false;
+                }
+
+                return true;
+            }
+
+            isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            isValidPhone(phone) {
+                return /^\+?[\d\s-()]{10,}$/.test(phone);
+            }
+
+            getOTPValue() {
+                let otp = '';
+                for (let i = 1; i <= 6; i++) {
+                    otp += document.getElementById(`otp${i}`).value;
+                }
+                return otp;
+            }
+
+            clearOTP() {
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`otp${i}`).value = '';
+                }
+                document.getElementById('otp1').focus();
+            }
+
+            updateOTPMessage(method, identifier) {
+                const message = document.getElementById('otp-message');
+                if (method === 'email') {
+                    message.textContent = `We've sent a 6-digit verification code to ${identifier}`;
+                } else {
+                    message.textContent = `We've sent a 6-digit verification code to ${identifier}`;
+                }
+            }
+
+            goToStep(step) {
+                // Hide all steps
+                document.getElementById('registration-form').classList.add('hidden');
+                document.getElementById('otp-verification').classList.add('hidden');
+                document.getElementById('success-message').classList.add('hidden');
+
+                // Update step indicators
+                document.getElementById('step1-indicator').className = 'flex items-center justify-center w-8 h-8 bg-gray-600 rounded-full text-sm font-bold';
+                document.getElementById('step2-indicator').className = 'flex items-center justify-center w-8 h-8 bg-gray-600 rounded-full text-sm font-bold';
+                document.getElementById('step-connector').className = 'w-16 h-1 bg-gray-600';
+
+                // Show current step
+                if (step === 1) {
+                    document.getElementById('registration-form').classList.remove('hidden');
+                    document.getElementById('step1-indicator').className = 'flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full text-sm font-bold';
+                } else if (step === 2) {
+                    document.getElementById('otp-verification').classList.remove('hidden');
+                    document.getElementById('step1-indicator').className = 'flex items-center justify-center w-8 h-8 bg-green-600 rounded-full text-sm font-bold';
+                    document.getElementById('step2-indicator').className = 'flex items-center justify-center w-8 h-8 bg-blue-600 rounded-full text-sm font-bold';
+                    document.getElementById('step-connector').className = 'w-16 h-1 bg-green-600';
+                    document.getElementById('otp1').focus();
+                } else if (step === 3) {
+                    document.getElementById('success-message').classList.remove('hidden');
+                    document.getElementById('step1-indicator').className = 'flex items-center justify-center w-8 h-8 bg-green-600 rounded-full text-sm font-bold';
+                    document.getElementById('step2-indicator').className = 'flex items-center justify-center w-8 h-8 bg-green-600 rounded-full text-sm font-bold';
+                    document.getElementById('step-connector').className = 'w-16 h-1 bg-green-600';
+                }
+
+                this.currentStep = step;
+            }
+
+            startCountdown() {
+                this.stopCountdown();
+                this.countdownInterval = setInterval(() => {
+                    this.countdown--;
+                    const minutes = Math.floor(this.countdown / 60);
+                    const seconds = this.countdown % 60;
+                    document.getElementById('countdown').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                    if (this.countdown <= 0) {
+                        this.stopCountdown();
+                        this.showError('Verification code has expired. Please request a new one.');
+                    }
+                }, 1000);
+            }
+
+            stopCountdown() {
+                if (this.countdownInterval) {
+                    clearInterval(this.countdownInterval);
+                    this.countdownInterval = null;
+                }
+            }
+
+            showLoading(text = 'Processing...') {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading').classList.remove('hidden');
+            }
+
+            hideLoading() {
+                document.getElementById('loading').classList.add('hidden');
+            }
+
+            showError(message) {
+                // You can implement a proper toast/notification system here
+                alert('Error: ' + message);
+            }
+
+            showSuccess(message) {
+                // You can implement a proper toast/notification system here
+                alert('Success: ' + message);
+            }
+        }
+
+        // Initialize registration system when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new RegistrationSystem();
+        });
+    </script>
+</body>
+</html>
