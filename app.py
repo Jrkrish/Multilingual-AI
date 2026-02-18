@@ -383,6 +383,20 @@ def resolve_human_query(query_id):
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
+@app.route('/api/google-maps-key')
+def get_google_maps_key():
+    """Get Google Maps API key for frontend"""
+    try:
+        # Get API key from environment variables
+        google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+        if not google_maps_api_key:
+            return jsonify({"success": False, "error": "Google Maps API key not configured"})
+
+        return jsonify({"success": True, "api_key": google_maps_api_key})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 @app.route('/api/gemini-key')
 def get_gemini_key():
     """Get Gemini API key for frontend"""
@@ -542,6 +556,7 @@ if __name__ == '__main__':
     print("  - GET  /api/human-agent/dashboard - Get agent dashboard")
     print("  - POST /api/human-agent/status/<id> - Update agent status")
     print("  - POST /api/human-agent/resolve/<id> - Resolve query")
+    print("  - GET  /api/google-maps-key - Get Google Maps API key")
     print("  - GET  /api/gemini-key - Get Gemini API key")
     print("  - GET  /health - Health check")
 
