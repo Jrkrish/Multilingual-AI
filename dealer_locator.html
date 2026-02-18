@@ -157,15 +157,21 @@
                 }
             }
 
-            loadGoogleMapsAPI() {
-                return new Promise((resolve, reject) => {
-                    if (window.google && window.google.maps) {
-                        resolve();
-                        return;
-                    }
+            async loadGoogleMapsAPI() {
+                if (window.google && window.google.maps) {
+                    return Promise.resolve();
+                }
 
+                // Fetch the API key from the backend
+                const response = await fetch('/api/google-maps-key');
+                const data = await response.json();
+                if (!data.success || !data.api_key) {
+                    throw new Error('Google Maps API key not configured. Please set GOOGLE_MAPS_API_KEY in your .env file.');
+                }
+
+                return new Promise((resolve, reject) => {
                     const script = document.createElement('script');
-                    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDJ_7J5jfhTyuwU9q4I3Y6_VBe9ODDWFhg&libraries=places,geometry`;
+                    script.src = `https://maps.googleapis.com/maps/api/js?key=${data.api_key}&libraries=places,geometry`;
                     script.async = true;
                     script.defer = true;
 

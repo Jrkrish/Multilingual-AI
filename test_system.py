@@ -193,6 +193,19 @@ def test_api_endpoints():
             assert 'response' in data, "No response in chat data"
             print("✅ Chat API endpoint working")
 
+            # Test Google Maps key endpoint (without env var set)
+            response = client.get('/api/google-maps-key')
+            assert response.status_code == 200, "Google Maps key endpoint failed"
+            data = json.loads(response.data)
+            # When GOOGLE_MAPS_API_KEY is not set, should return error
+            if not os.getenv('GOOGLE_MAPS_API_KEY'):
+                assert data['success'] is False, "Should fail without GOOGLE_MAPS_API_KEY"
+                print("✅ Google Maps key endpoint working (key not configured)")
+            else:
+                assert data['success'] is True, "Google Maps key API failed"
+                assert 'api_key' in data, "No api_key in response"
+                print("✅ Google Maps key endpoint working")
+
         print("✅ API endpoints tests passed!\n")
 
     except Exception as e:
