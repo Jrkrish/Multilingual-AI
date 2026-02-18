@@ -159,7 +159,7 @@
 
             async loadGoogleMapsAPI() {
                 if (window.google && window.google.maps) {
-                    return;
+                    return Promise.resolve();
                 }
 
                 // Fetch the API key from the backend

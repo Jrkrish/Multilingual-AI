@@ -199,10 +199,10 @@ def test_api_endpoints():
             data = json.loads(response.data)
             # When GOOGLE_MAPS_API_KEY is not set, should return error
             if not os.getenv('GOOGLE_MAPS_API_KEY'):
-                assert data['success'] == False, "Should fail without GOOGLE_MAPS_API_KEY"
+                assert data['success'] is False, "Should fail without GOOGLE_MAPS_API_KEY"
                 print("✅ Google Maps key endpoint working (key not configured)")
             else:
-                assert data['success'] == True, "Google Maps key API failed"
+                assert data['success'] is True, "Google Maps key API failed"
                 assert 'api_key' in data, "No api_key in response"
                 print("✅ Google Maps key endpoint working")
 
